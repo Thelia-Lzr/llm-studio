@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: llm-studio-bff",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/llm-studio-bff",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "MODE": "development",
+        "HTTP__ADDR": ":8080",
+        "PUBLIC__BASE_URL": "http://localhost:8080",
+        "FRONTEND__BASE_URL": "http://localhost:3000",
+        "IDENTRA__GRPC_ADDR": "localhost:50051",
+        "IDENTRA__OAUTH_PROVIDER": "github",
+        "AUTH__COOKIE_SECURE": "false"
+      }
+    },
+    {
+      "name": "Debug: next dev (website)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/website",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "env": {
+        "BFF_BASE_URL": "http://localhost:8080",
+        "NODE_OPTIONS": "--inspect"
+      },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+

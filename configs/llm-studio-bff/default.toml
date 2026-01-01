@@ -1,0 +1,43 @@
+[http]
+addr = ":8080"
+
+[public]
+base_url = "http://localhost:8080"
+
+[frontend]
+base_url = "http://localhost:3000"
+
+[identra]
+grpc_addr = "localhost:50051"
+oauth_provider = "github"
+
+[llm_gateway]
+admin_grpc_addr = "localhost:50052"
+service_token = "changeme-admin-token"
+token_ttl_seconds = 3600
+
+[database]
+driver = "sqlite"
+host = ""
+port = 0
+username = ""
+password = ""
+name = "data/llm-studio.db"
+sslmode = "disable"
+
+[redis]
+urls = ["localhost:6379"]
+password = ""
+session_prefix = "llmstudio:sess:"
+
+[auth]
+cookie_secure = false
+cookie_domain = ""
+cookie_path = "/"
+session_cookie_name = "llmstudio_session"
+return_to_cookie_name = "llmstudio_return_to"
+cookie_max_age_days = 7
+return_to_max_age_mins = 10
+super_admin_emails = ["slhmy.zzy@gmail.com"]
+allowed_return_to_host = ""
+

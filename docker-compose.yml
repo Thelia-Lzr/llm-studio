@@ -1,0 +1,62 @@
+# To override default environment variables, create a docker-compose.override.yml file.
+
+services:
+  identra-grpc:
+    image: ghcr.io/poly-workshop/identra-grpc:v0.1.1
+    ports:
+      - 50051:50051
+    environment:
+      - AUTH__GITHUB__CLIENT_ID=1234567890
+      - AUTH__GITHUB__CLIENT_SECRET=1234567890
+
+  llm-gateway-admin-grpc:
+    image: ghcr.io/poly-workshop/llm-gateway-admin-grpc:v0.1.0
+    ports:
+      - 50052:50051
+    environment:
+      - AUTH__ADMIN__SERVICE_TOKEN=changeme-admin-token
+      - STORAGE__GORM__DRIVER=postgres
+      - STORAGE__GORM__HOST=host.docker.internal
+      - STORAGE__GORM__PASSWORD=password
+      - STORAGE__GORM__DBNAME=llm-gateway
+    volumes:
+      - type: bind
+        source: ./jwt_signing_private_key.pem
+        target: /app/jwt_signing_private_key.pem
+        read_only: true
+  
+  llm-gateway-http:
+    image: ghcr.io/poly-workshop/llm-gateway-http:v0.1.0
+    ports:
+      - 8081:8080
+    environment:
+      - HTTP__CORS__ENABLED=true
+      - HTTP__CORS__ALLOW_ORIGINS=http://localhost:3000
+      - AUTH__JWT__REQUIRED=true
+      - AUTH__JWT__ISSUER=llm-gateway-admin
+      - AUTH__JWT__AUDIENCE=llm-gateway
+      - AUTH__JWT__PUBLIC_KEY_FILE=jwt_verify_public_key.pem
+      - STORAGE__GORM__DRIVER=postgres
+      - STORAGE__GORM__HOST=host.docker.internal
+      - STORAGE__GORM__PASSWORD=password
+      - STORAGE__GORM__DBNAME=llm-gateway
+      - USAGE_SINK__ENABLED=true
+      - USAGE_SINK__REDIS_STREAM__ADDR=host.docker.internal:6379
+    volumes:
+      - type: bind
+        source: ./jwt_verify_public_key.pem
+        target: /app/jwt_verify_public_key.pem
+        read_only: true
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  postgres:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432

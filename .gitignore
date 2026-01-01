@@ -1,0 +1,8 @@
+docker-compose.override.yml
+__debug_bin*
+
+data/
+
+# Local dev JWT keys (do not commit)
+jwt_signing_private_key.pem
+jwt_verify_public_key.pem
